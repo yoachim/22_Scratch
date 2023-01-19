@@ -98,20 +98,18 @@ if __name__ == "__main__":
     indices = []
 
     # With a million object detections, we're going to need to chunk this up
-    breaks = np.floor(np.linspace(0, len(ss_objects)-1, 100)).astype(int)
+    breaks = np.floor(np.linspace(0, len(ss_objects)-1, 10000)).astype(int)
     counter = 0
     lower = breaks[lower]
     upper = breaks[upper]
     # for lower, upper in zip(breaks[0:-1], breaks[1:]):
     # this step is the grind. Generates a few arrays that are n_detections X n_satellites, so
     # potential to gobble up a few GB of memory. Looks like I got up to 10-15 GB on a 6.8k x 30k run.
+    print('finding overlaps', lower, upper)
     indx = constellation.check_positions(ss_objects['ra'].values[lower:upper],
                                          ss_objects['dec'].values[lower:upper],
                                          ss_objects['observationStartMJD'].values[lower:upper],
                                          visit_times.values[lower:upper])
-    indices.append(indx+lower)
-
-    # output the indices
-    with open('out_%i.txt' % lower, 'w') as tfile:
-        tfile.write('\n'.join(indices))
+    
+    np.savetxt('out_%i.txt' % lower, indx)
 
