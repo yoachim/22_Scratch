@@ -88,7 +88,7 @@ if __name__ == "__main__":
 
     upper = lower + 1
 
-    ss_observations_file = 'franken_v2.99_10yrs__granvik_pha_5k_obs.txt'
+    ss_observations_file = 'baseline_v3.0_10yrs__granvik_pha_5k_obs.txt'
     ss_objects = pd.read_csv(ss_observations_file, delim_whitespace=True, comment="#")
     tles = starlink_tles_v2()
     constellation = SConstellation(tles)
@@ -98,18 +98,18 @@ if __name__ == "__main__":
     indices = []
 
     # With a million object detections, we're going to need to chunk this up
-    breaks = np.floor(np.linspace(0, len(ss_objects)-1, 10000)).astype(int)
+    breaks = np.floor(np.linspace(0, len(ss_objects)-1, 1000)).astype(int)
     counter = 0
     lower = breaks[lower]
     upper = breaks[upper]
     # for lower, upper in zip(breaks[0:-1], breaks[1:]):
     # this step is the grind. Generates a few arrays that are n_detections X n_satellites, so
     # potential to gobble up a few GB of memory. Looks like I got up to 10-15 GB on a 6.8k x 30k run.
-    print('finding overlaps', lower, upper)
+    # print('finding overlaps', lower, upper)
     indx = constellation.check_positions(ss_objects['ra'].values[lower:upper],
                                          ss_objects['dec'].values[lower:upper],
                                          ss_objects['observationStartMJD'].values[lower:upper],
                                          visit_times.values[lower:upper])
     
-    np.savetxt('out_%i.txt' % lower, indx)
+    np.savetxt('out_files/out_%i.txt' % args.lower, indx)
 
