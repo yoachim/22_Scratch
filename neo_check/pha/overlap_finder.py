@@ -110,6 +110,7 @@ if __name__ == "__main__":
                                          ss_objects['dec'].values[lower:upper],
                                          ss_objects['observationStartMJD'].values[lower:upper],
                                          visit_times.values[lower:upper])
+    indx += args.lower
     
     np.savetxt('out_files/out_%i.txt' % args.lower, indx)
 
