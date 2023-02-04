@@ -83,6 +83,8 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--lower", type=int, default=0)
+    # Width of satellite streak to use in arcmin
+    parser.add_argument("--wide", type=float, default=1.)
     args = parser.parse_args()
     lower = args.lower
 
@@ -109,8 +111,8 @@ if __name__ == "__main__":
     indx = constellation.check_positions(ss_objects['ra'].values[lower:upper],
                                          ss_objects['dec'].values[lower:upper],
                                          ss_objects['observationStartMJD'].values[lower:upper],
-                                         visit_times.values[lower:upper])
+                                         visit_times.values[lower:upper], mask_width=args.wide/60.)
     indx += args.lower
     
-    np.savetxt('out_files/out_%i.txt' % args.lower, indx)
+    np.savetxt('out_files%i/out_%i.txt' % (args.wide, args.lower), indx)
 

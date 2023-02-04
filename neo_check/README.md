@@ -1,12 +1,50 @@
 Example of how one check the impact of a satellite constellation on solar system obejct recovery
 
-Uses `rubin_sim` to do things. Once rubin_sim is installed, grab a survey simulation. In this example I used franken_v2.99_10yrs.db which can be grabbed from https://s3df.slac.stanford.edu/data/rubin/sim-data/sims_featureScheduler_runs3.0/franken/franken_v2.99_10yrs.db
+Uses `rubin_sim` to do things. Once rubin_sim is installed, grab a survey simulation. In this example I used baseline_v3.0_10yrs.db which can be grabbed from 
 
-Note, using the dev-camel-snake branch of `rubin_sim` in anticipation that it will soon (by Dec 2022) be merged to master.
-
-* Run the ss_observations_1.ipynb notebook. This takes a sample population of solar system objects and records which ones would be observed given the survey simulation. Generates a file like `franken_v2.99_10yrs__vatiras_granvik_10k_obs.txt`
-* Run the ss_observations_2.ipynb notebook. This generates a satellite constellation and checks which observations from step 1 would have been lost to streaks. Outputs a file like `franken_v2.99_10yrs__vatiras_granvik_10k_obs_streaked.txt` that are the subset of surviving observations.
+* Run the ss_observations_1.ipynb notebook. This takes a sample population of solar system objects and records which ones would be observed given the survey simulation. Generates a file like `baseline_v3.0_10yrs__vatiras_granvik_10k_obs.txt`
+* Run the ss_observations_2.ipynb notebook. This generates a satellite constellation and checks which observations from step 1 would have been lost to streaks. Outputs a file like `baseline_v3.0_10yrs__vatiras_granvik_10k_obs_streaked.txt` that are the subset of surviving observations.
 * run ss_observations_3.sh to do the solar system analysis on both sets of observations. Will need some path updates for someone else to run. Generates two directories with the solar system analysis
 * run `show_maf` to launch a web browser and check the analysis. Note that we could lose lots of individual observations, but have little to no change in some of the analysis. E.g., we lose a few observations of an object, but we still have enough observations of it to recover an orbit, so our final estimate of the completeness of the population will be unchanged.
+
+
+
+
+------
+
+Results:
+
+First, found all the observations of Vatira objects we would get in the baseline (baseline_v3.0_10yrs__vatiras_granvik_10k_obs.txt--6117 detections of 10k Vatiras).
+
+Generated a Starlink Gen2 constellation with 30k satellites
+
+Check how many of our previous detections would get hit by 1 arcmin wide satellite streaks (baseline_v3.0_10yrs__vatiras_granvik_10k_obs_streaked.txt--down to 6068 detections)
+Check how many detections survive with a 10 arcmin streak (baseline_v3.0_10yrs__wide_vatiras_granvik_10k_obs_streaked.txt--5766 detections)
+
+Then we can run all of those through our usual orbit recovery criteria pipeline
+
+For the Vatiras, we're probably most interested in the "1 quad in 1 night"
+
+| run        |N detections |      objects H<=22 with 1 quad in 1 night       | 
+| -----      | -----       |       --------------- |
+| Baseline   |6117         |       1.2%  |
+| 1 arcmin   |6068         |       1.2%  |
+| 10 arcmin  |5766         |       1.1%  |
+
+
+Conclusion:  Even a very large 30k satllite constellation which leaves streaks larger than any reasonable satellite ever seen before would not significantly impact our ability to detect and reconstruct orbits of Vatiras. 
+
+------
+
+Can do the same thing for potentially hazerdous NEOs. Only major difference is now we have a 5k tracer population of NEO objects where before we had 10k Vatiras.
+
+NEOs are a lot easier to spot 
+
+
+| run        |N detections |      fraction of objects H<=22 with xxx       | 
+| -----      | -----       |       --------------- |
+| Baseline   | 1.55e6        |        |
+| 1 arcmin   |         |        |
+| 10 arcmin  |         |        |
 
 
