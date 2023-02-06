@@ -43,8 +43,8 @@ NEOs are a lot easier to spot
 
 | run        |N detections |      fraction of objects H<=22 with xxx       | 
 | -----      | -----       |       --------------- |
-| Baseline   | 1.55e6        |        |
-| 1 arcmin   |         |        |
-| 10 arcmin  |         |        |
+| Baseline   | 1.553e6        |        |
+| 1 arcmin   | 1.552e6        |        |
+| 10 arcmin  | 1.551e6        |        |
 
 
