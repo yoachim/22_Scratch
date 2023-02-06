@@ -38,13 +38,13 @@ Conclusion:  Even a very large 30k satllite constellation which leaves streaks l
 
 Can do the same thing for potentially hazerdous NEOs. Only major difference is now we have a 5k tracer population of NEO objects where before we had 10k Vatiras.
 
-NEOs are a lot easier to spot 
+NEOs are a lot easier to spot. let's compare PHA 3 pairs in 30 nights detection loss
 
 
-| run        |N detections |      fraction of objects H<=22 with xxx       | 
+| run        |N detections |      H=22.0       | 
 | -----      | -----       |       --------------- |
-| Baseline   | 1.553e6        |        |
-| 1 arcmin   | 1.552e6        |        |
-| 10 arcmin  | 1.551e6        |        |
+| Baseline   | 1.553e6        |    63%    |
+| 1 arcmin   | 1.552e6        |    63%    |
+| 10 arcmin  | 1.551e6        |    63%    |
 
 
