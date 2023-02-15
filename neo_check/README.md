@@ -35,7 +35,7 @@ For the Vatiras, we're probably most interested in the "1 quad in 1 night"
 | Baseline   |6117         |       1.25%  |
 | 1 arcmin   |6068         |       1.21%  |
 | 10 arcmin  |5766         |       1.11%  |
-| FoV        |           |          |
+| FoV        |2958         |       0.25%   |
 
 ------
 
@@ -50,10 +50,10 @@ NEOs are a lot easier to spot. let's compare PHA 3 pairs in 30 nights detection 
 | Baseline   | 1.553e6        |    62.8%    |
 | 1 arcmin   | 1.552e6        |    62.8%    |
 | 10 arcmin  | 1.551e6        |    62.8%    |
-| FoV        |           |          |
+| FoV        | 1.399e6        |    60.8%  |
 
 
-Conclusion:  If Starlink increases their fleet by an order of magnitude to a 30k satllite constellation AND those satellites leave streaks an order of magnitude larger than what we expect (10 arcmin rather than 1 arcmin) it would wipe out ~10% of our Vatira discoveries. The impact on other science cases looks to be sub-percent. 
+Conclusion:  If Starlink increases their fleet by an order of magnitude to a 30k satllite constellation AND those satellites leave streaks an order of magnitude larger than what we expect (10 arcmin rather than 1 arcmin) it would wipe out ~10% of our Vatira discoveries. The impact on other science cases looks to be sub-percent to 1%. 
 
 
 
