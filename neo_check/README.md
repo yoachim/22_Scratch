@@ -23,16 +23,19 @@ Check how many detections survive with a 10 arcmin streak (baseline_v3.0_10yrs__
 
 Then we can run all of those through our usual orbit recovery criteria pipeline
 
+Run the baseline with a circular field of view (No gaps), and the standard where we check for chip and raft gaps (Baseline)
+
+Also check for a scenario where we throw out any observation that has a streak. Then we go from 2.09e6 visits to 1.95e6 visits. Number of short twilight visits goes from 45835 to 29292.
+
 For the Vatiras, we're probably most interested in the "1 quad in 1 night"
 
 | run        |N detections |      objects H<=22 with 1 quad in 1 night       | 
 | -----      | -----       |       --------------- |
-| Baseline   |6117         |       1.2%  |
-| 1 arcmin   |6068         |       1.2%  |
-| 10 arcmin  |5766         |       1.1%  |
-
-
-Conclusion:  Even a very large 30k satllite constellation which leaves streaks larger than any reasonable satellite ever seen before would not significantly impact our ability to detect and reconstruct orbits of Vatiras. 
+| No gaps    |6434         |       1.35% |
+| Baseline   |6117         |       1.25%  |
+| 1 arcmin   |6068         |       1.21%  |
+| 10 arcmin  |5766         |       1.11%  |
+| FoV        |           |          |
 
 ------
 
@@ -41,10 +44,16 @@ Can do the same thing for potentially hazerdous NEOs. Only major difference is n
 NEOs are a lot easier to spot. let's compare PHA 3 pairs in 30 nights detection loss
 
 
-| run        |N detections |      H=22.0       | 
+| run        |N detections |      H<=22.0       | 
 | -----      | -----       |       --------------- |
-| Baseline   | 1.553e6        |    63%    |
-| 1 arcmin   | 1.552e6        |    63%    |
-| 10 arcmin  | 1.551e6        |    63%    |
+| No gaps    | 1.631e6     |       64.6%   |
+| Baseline   | 1.553e6        |    62.8%    |
+| 1 arcmin   | 1.552e6        |    62.8%    |
+| 10 arcmin  | 1.551e6        |    62.8%    |
+| FoV        |           |          |
+
+
+Conclusion:  If Starlink increases their fleet by an order of magnitude to a 30k satllite constellation AND those satellites leave streaks an order of magnitude larger than what we expect (10 arcmin rather than 1 arcmin) it would wipe out ~10% of our Vatira discoveries. The impact on other science cases looks to be sub-percent. 
+
 
 
