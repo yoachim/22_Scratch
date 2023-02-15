@@ -53,7 +53,7 @@ NEOs are a lot easier to spot. let's compare PHA 3 pairs in 30 nights detection 
 | FoV        | 1.399e6        |    60.8%  |
 
 
-Conclusion:  If Starlink increases their fleet by an order of magnitude to a 30k satllite constellation AND those satellites leave streaks an order of magnitude larger than what we expect (10 arcmin rather than 1 arcmin) it would wipe out ~10% of our Vatira discoveries. The impact on other science cases looks to be sub-percent to 1%. 
+**Conclusion:  If Starlink increases their fleet by an order of magnitude to a 30k satllite constellation AND those satellites leave streaks an order of magnitude larger than what we expect (10 arcmin rather than 1 arcmin) it would wipe out ~10% of our Vatira discoveries. The impact on other science cases looks to be sub-percent to 1%.**
 
 
 
