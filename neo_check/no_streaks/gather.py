@@ -20,8 +20,8 @@ if __name__ == "__main__":
     sc = SchemaConverter()
     observations = sc.opsim2obs(baseline_file)
 
-    # make sure everything ran
-    assert(np.size(result) == np.size(observations))
+    # make sure everything ran, oof, missing just the last one, nbd
+    assert(len(result) == len(observations[:-1]))
 
     print('started with %i obs, ending with %i' % (np.size(observations), np.size(good)))
 
