@@ -6,8 +6,9 @@ from rubin_sim.scheduler.detailers import BaseDetailer
 
 
 class ParallacticRotationDetailer(BaseDetailer):
-    """T """
-    def __call__(self, observation_list, conditions):
+    """ """
+    def __call__(self, observation_list, conditions, limits=[-270, 270]):
+        limits = np.radians(limits)
         for obs in observation_list:
             alt, az = _approx_ra_dec2_alt_az(
                 obs["RA"],
@@ -19,12 +20,18 @@ class ParallacticRotationDetailer(BaseDetailer):
             obs_pa = _approx_altaz2pa(alt, az, conditions.site.latitude_rad)
             obs["rotSkyPos_desired"] = obs_pa
 
-            resulting_rot_tel_pos = (obs["rotSkyPos_desired"] + obs_pa + 2*np.pi) % (2*np.pi)
+            resulting_rot_tel_pos = obs["rotSkyPos_desired"] + obs_pa
 
-            # check if this puts us out of bounds, 
-            # if it does, just going an extra 180 degrees should fix it I think.
+            if resulting_rot_tel_pos > np.max(limits):
+                resulting_rot_tel_pos -= 2*np.pi
+            if resulting_rot_tel_pos < np.min(limits):
+                resulting_rot_tel_pos += 2*np.pi
 
-            # Need to kill rotTelPos if we don't want it used.
+            # If those corrections still leave us bad, just pull it back 180.
+            if resulting_rot_tel_pos > np.max(limits):
+                resulting_rot_tel_pos -= np.pi
+
+            # The rotTelPos overides everything else. 
             obs["rotTelPos"] = resulting_rot_tel_pos
             # if the rotSkyPos_desired isn't possible, fall back to this.
             obs["rotTelPos_backup"] = 0
