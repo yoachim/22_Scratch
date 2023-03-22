@@ -1,7 +1,35 @@
 import numpy as np
 import healpy as hp
-from rubin_sim.utils import healbin, _approx_RaDec2AltAz, _angularSeparation
+from rubin_sim.utils import healbin, _approx_ra_dec2_alt_az, _angular_separation, _approx_altaz2pa
 from rubin_sim.scheduler.surveys import BaseSurvey
+from rubin_sim.scheduler.detailers import BaseDetailer
+
+
+class ParallacticRotationDetailer(BaseDetailer):
+    """T """
+    def __call__(self, observation_list, conditions):
+        for obs in observation_list:
+            alt, az = _approx_ra_dec2_alt_az(
+                obs["RA"],
+                obs["dec"],
+                conditions.site.latitude_rad,
+                conditions.site.longitude_rad,
+                conditions.mjd,
+            )
+            obs_pa = _approx_altaz2pa(alt, az, conditions.site.latitude_rad)
+            obs["rotSkyPos_desired"] = obs_pa
+
+            resulting_rot_tel_pos = (obs["rotSkyPos_desired"] + obs_pa + 2*np.pi) % (2*np.pi)
+
+            # check if this puts us out of bounds, 
+            # if it does, just going an extra 180 degrees should fix it I think.
+
+            # Need to kill rotTelPos if we don't want it used.
+            obs["rotTelPos"] = resulting_rot_tel_pos
+            # if the rotSkyPos_desired isn't possible, fall back to this.
+            obs["rotTelPos_backup"] = 0
+
+        return observation_list
 
 
 class PointingsSurvey(BaseSurvey):
@@ -17,7 +45,7 @@ class PointingsSurvey(BaseSurvey):
         Altitude limit of the telescope (degrees).
     """
     def __init__(self, observations, gap_min=25.0, moon_dist_limit=30.,
-                 weights=None, alt_max=85., alt_min=20.):
+                 weights=None, alt_max=85., alt_min=20., detailers=None):
 
         # Not doing a super here, don't want to even have an nside defined.
 
@@ -42,6 +70,11 @@ class PointingsSurvey(BaseSurvey):
             self.weights = weights
 
         self.scheduled_obs = None
+        # If there's no detailers, add one to set rotation to near zero
+        if detailers is None:
+            self.detailers = [ParallacticRotationDetailer()]
+        else:
+            self.detailers = detailers
     
     def _check_feasibility(self, conditions):
         result = True
@@ -53,7 +86,7 @@ class PointingsSurvey(BaseSurvey):
     def calc_reward_function(self, conditions):
         # 
         if self.last_computed_reward != conditions.mjd:
-            self.alt, self.az = _approx_RaDec2AltAz(self.observations['RA'], self.observations['dec'],
+            self.alt, self.az = _approx_ra_dec2_alt_az(self.observations['RA'], self.observations['dec'],
                                                     conditions.site.latitude_rad, conditions.site.longitude_rad,
                                                     conditions.mjd,
                                                     lmst=conditions.lmst)
@@ -79,8 +112,17 @@ class PointingsSurvey(BaseSurvey):
         if not np.isfinite(np.nanmax(self.reward)):
             import pdb ; pdb.set_trace()
         return np.nanmax(self.reward)
-    
+
     def generate_observations(self, conditions):
+        # Just for clarity, this is in the base class, but repeated here.
+        observations = self.generate_observations_rough(conditions)
+        for detailer in self.detailers:
+            observations = detailer(observations, conditions)
+        return observations
+    
+    def generate_observations_rough(self, conditions):
+        """
+        """
         max_reward = self.calc_reward_function(conditions)
         # take the first one in the array if there's a tie
         winner = np.min(np.where(self.reward == max_reward)[0])
@@ -108,8 +150,8 @@ class PointingsSurvey(BaseSurvey):
 
     def moon_limit(self, conditions):
         result = self.zeros.copy()
-        dists = _angularSeparation(self.observations['RA'], self.observations['dec'],
-                                   conditions.moonRA, conditions.moonDec)
+        dists = _angular_separation(self.observations['RA'], self.observations['dec'],
+                                   conditions.moon_ra, conditions.moon_dec)
         result[np.where(dists < self.moon_dist_limit)] = np.nan
         return result
 
