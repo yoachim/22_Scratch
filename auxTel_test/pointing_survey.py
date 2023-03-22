@@ -43,9 +43,12 @@ class PointingsSurvey(BaseSurvey):
         The minimum gap to force between observations of the same spot (minutes)
     alt_limit : `float` (85)
         Altitude limit of the telescope (degrees).
+    ha_max, ha_min : float (4,-4)
+        hour angle limits
     """
     def __init__(self, observations, gap_min=25.0, moon_dist_limit=30.,
-                 weights=None, alt_max=85., alt_min=20., detailers=None):
+                 weights=None, alt_max=85., alt_min=20., detailers=None,
+                 ha_max=4, ha_min=-4):
 
         # Not doing a super here, don't want to even have an nside defined.
 
@@ -55,6 +58,11 @@ class PointingsSurvey(BaseSurvey):
         self.alt_max = np.radians(alt_max)
         self.alt_min = np.radians(alt_min)
         self.zeros = self.observations['RA'] * 0.
+
+        # convert hour angle limits to radians and 0-2pi
+        self.ha_max = (np.radians(ha_max * 360/24) + 2*np.pi) % (2*np.pi)
+        self.ha_min = (np.radians(ha_min * 360/24) + 2*np.pi) % (2*np.pi)
+
         # Arrays to track progress
         self.n_obs = np.zeros(self.zeros.size, dtype=int)
         self.last_observed = np.zeros(self.zeros.size, dtype=float)
@@ -97,7 +105,7 @@ class PointingsSurvey(BaseSurvey):
             self.reward = np.zeros(self.observations.size, dtype=float)
             # go through and apply cuts
             # XXX--need to migrate over hour angle limits
-            #self.reward += self.apply_ha_limit(conditions)
+            self.reward += self.ha_limit(conditions)
             self.reward += self.zenith_limit(conditions)
             self.reward += self.moon_limit(conditions)
             # XXX apply all the things we want to 
@@ -109,8 +117,6 @@ class PointingsSurvey(BaseSurvey):
             # Can think about slewtime calc. Not sure why there were 3 before.
 
             self.last_computed_reward = conditions.mjd
-        if not np.isfinite(np.nanmax(self.reward)):
-            import pdb ; pdb.set_trace()
         return np.nanmax(self.reward)
 
     def generate_observations(self, conditions):
@@ -139,7 +145,7 @@ class PointingsSurvey(BaseSurvey):
     def ha_limit(self, conditions):
         result = self.zeros.copy()
         # apply hour angle limits
-        result[np.where(self.ha > xxx)] = np.nan
+        result[np.where((self.ha > self.ha_max) & (self.ha < self.ha_min))] = np.nan
         return result
 
     def zenith_limit(self, conditions):
