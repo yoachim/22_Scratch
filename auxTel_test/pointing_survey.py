@@ -140,10 +140,10 @@ class PointingsSurvey(BaseSurvey):
         # take the first one in the array if there's a tie
         winner = np.min(np.where(self.reward == max_reward)[0])
         # XXX--why this reshape!! Figure out where this goes to check and throw useful warnings
-        return [self.observations[winner].reshape(1)]
+        return [self.observations[winner].copy().reshape(1)]
     
     def add_observation(self, observation, indx=None):
-        # Check if we have the same note. Maybe also check other things like exptime
+        # Check if we have the same note. Maybe also check other things like exptime?
         indx = np.where(observation['note'] == self.observations['note'])[0]
         # Probably need to add a check that note is unique
         self.n_obs[indx] += 1
